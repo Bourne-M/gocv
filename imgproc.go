@@ -393,6 +393,12 @@ func BoundingRect(contour PointVector) image.Rectangle {
 	return rect
 }
 
+func BoundingRect2f(contour Point2fVector) image.Rectangle {
+	r := C.BoundingRect2f(contour.p)
+	rect := image.Rect(int(r.x), int(r.y), int(r.x+r.width), int(r.y+r.height))
+	return rect
+}
+
 // BoxPoints finds the four vertices of a rotated rect. Useful to draw the rotated rectangle.
 //
 // For further Details, please see:

@@ -179,6 +179,12 @@ struct Rect BoundingRect(PointVector pts) {
     return r;
 }
 
+struct Rect BoundingRect2f(Point2fVector pts) {
+    cv::Rect bRect = cv::boundingRect(*pts);
+    Rect r = {bRect.x, bRect.y, bRect.width, bRect.height};
+    return r;
+}
+
 void BoxPoints(RotatedRect rect, Mat boxPts){
     cv::Point2f centerPt(rect.center.x , rect.center.y);
     cv::Size2f rSize(rect.size.width, rect.size.height);
