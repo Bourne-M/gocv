@@ -495,10 +495,10 @@ func MinAreaRect2f(points PointVector) RotatedRect2f {
 	var bigArr [40]float32
 	outLen := C.MinAreaRect2f(points.p, (*C.float)(&bigArr[0]))
 	realData := bigArr[0:outLen]
-	bx := realData[10]
-	by := realData[11]
-	bw := realData[12]
-	bh := realData[13]
+	bx := int(realData[10])
+	by := int(realData[11])
+	bw := int(realData[12])
+	bh := int(realData[13])
 	pts := make([]Point2f, 0)
 	for i := 0; i < 4; i++ {
 		pts = append(pts, Point2f{X: realData[2*i], Y: realData[2*i+1]})
@@ -506,7 +506,7 @@ func MinAreaRect2f(points PointVector) RotatedRect2f {
 
 	return RotatedRect2f{
 		Points:       pts,
-		BoundingRect: image.Rect(int(bx), int(by), int(bx+bw), int(by+bh)),
+		BoundingRect: image.Rect(bx, by, bx+bw, by+bh),
 		Center:       image.Pt(int(realData[14]), int(realData[15])),
 		Width:        realData[8],
 		Height:       realData[9],
