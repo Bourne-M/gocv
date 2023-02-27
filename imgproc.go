@@ -445,6 +445,14 @@ type RotatedRect struct {
 	Height       int
 	Angle        float64
 }
+type RotatedRect2f struct {
+	Points       []Point2f
+	BoundingRect image.Rectangle
+	Center       image.Point
+	Width        int
+	Height       int
+	Angle        float64
+}
 
 // toPoints converts C.Contour to []image.Points
 func toPoints(points C.Contour) []image.Point {
@@ -480,6 +488,29 @@ func MinAreaRect(points PointVector) RotatedRect {
 		Width:        int(result.size.width),
 		Height:       int(result.size.height),
 		Angle:        float64(result.angle),
+	}
+}
+
+func MinAreaRect2f(points PointVector) RotatedRect2f {
+	var bigArr [40]float32
+	outLen := C.MinAreaRect2f(points.p, (*C.float)(&bigArr[0]))
+	realData := bigArr[0:outLen]
+	bx := realData[8]
+	by := realData[9]
+	bw := realData[10]
+	bh := realData[11]
+	pts := make([]Point2f, 0)
+	for i := 0; i < 4; i++ {
+		pts = append(pts, Point2f{X: realData[2*i], Y: realData[2*i+1]})
+	}
+
+	return RotatedRect2f{
+		Points:       pts,
+		BoundingRect: image.Rect(int(bx), int(by), int(bx+bw), int(by+bh)),
+		Center:       image.Pt(int(realData[12]), int(realData[13])),
+		Width:        int(realData[10]),
+		Height:       int(realData[11]),
+		Angle:        float64(realData[14]),
 	}
 }
 

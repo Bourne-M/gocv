@@ -42,6 +42,7 @@ struct Rect BoundingRect(PointVector pts);
 void BoxPoints(RotatedRect rect, Mat boxPts);
 double ContourArea(PointVector pts);
 struct RotatedRect MinAreaRect(PointVector pts);
+int MinAreaRect2f(PointVector pts,float * outdata);
 struct RotatedRect FitEllipse(PointVector pts);
 void MinEnclosingCircle(PointVector pts, Point2f* center, float* radius);
 PointsVector FindContours(Mat src, Mat hierarchy, int mode, int method);
