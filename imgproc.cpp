@@ -215,7 +215,7 @@ struct RotatedRect MinAreaRect(PointVector pts){
 
 int  MinAreaRect2f(PointVector pts,float * outdata){
     cv::RotatedRect cvrect = cv::minAreaRect(*pts);
-    int outSize=15*sizeof(float);
+    int outSize=17*sizeof(float);
     float* buffer=new float[outSize];
 
     cv::Point2f* pts4 = new cv::Point2f[4];
@@ -226,7 +226,9 @@ int  MinAreaRect2f(PointVector pts,float * outdata){
         buffer[idx++]=pts4[j].y;
     }
     delete[] pts4;
-
+    buffer[idx++]=cvrect.size.width;
+    buffer[idx++]=cvrect.size.height;
+    
     cv::Rect bRect = cvrect.boundingRect();
     buffer[idx++]=float(bRect.x);
     buffer[idx++]=float(bRect.y);
