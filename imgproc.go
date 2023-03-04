@@ -498,8 +498,12 @@ func MinAreaRect(points PointVector) RotatedRect {
 }
 
 func MinAreaRect2f(points PointVector) RotatedRect2f {
-	var bigArr [40]float32
-	outLen := C.MinAreaRect2f(points.p, (*C.float)(&bigArr[0]))
+	// var bigArr [40]float32
+	size := 32 //另一种写法，c函数中不需要申请、释放内存
+	c := (*C.float)(C.malloc(C.size_t(size) * C.sizeof_float))
+	defer C.free(unsafe.Pointer(c))
+	outLen := C.MinAreaRect2f(points.p, c)
+	bigArr := (*[1 << 28]float32)(unsafe.Pointer(c))[:size:size]
 	realData := bigArr[0:outLen]
 	bx := int(realData[10])
 	by := int(realData[11])

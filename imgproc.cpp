@@ -219,10 +219,10 @@ struct RotatedRect MinAreaRect(PointVector pts){
     return retrect;
 }
 
-int  MinAreaRect2f(PointVector pts,float * outdata){
+int  MinAreaRect2f(PointVector pts,float *buffer){
     cv::RotatedRect cvrect = cv::minAreaRect(*pts);
-    int outSize=17*sizeof(float);
-    float* buffer=new float[outSize];
+    int outSize=17;
+    // float* buffer=new float[outSize];
 
     cv::Point2f* pts4 = new cv::Point2f[4];
     cvrect.points(pts4);
@@ -244,9 +244,9 @@ int  MinAreaRect2f(PointVector pts,float * outdata){
     buffer[idx++]=cvrect.center.x;
     buffer[idx++]=cvrect.center.y;
     buffer[idx++]=cvrect.angle;
-    memcpy(outdata,buffer,outSize);
-    delete[] buffer;
-    return outSize/sizeof(float);
+    // memcpy(outdata,buffer,outSize);
+    // delete[] buffer;
+    return outSize;
 }
 
 void MinEnclosingCircle(PointVector pts, Point2f* center, float* radius){
