@@ -498,29 +498,24 @@ func MinAreaRect(points PointVector) RotatedRect {
 }
 
 func MinAreaRect2f(points PointVector) RotatedRect2f {
-	// var bigArr [40]float32
-	size := 32 //另一种写法，c函数中不需要申请、释放内存
-	c := (*C.float)(C.malloc(C.size_t(size) * C.sizeof_float))
-	defer C.free(unsafe.Pointer(c))
-	outLen := C.MinAreaRect2f(points.p, c)
-	bigArr := (*[1 << 28]float32)(unsafe.Pointer(c))[:size:size]
-	realData := bigArr[0:outLen]
-	bx := int(realData[10])
-	by := int(realData[11])
-	bw := int(realData[12])
-	bh := int(realData[13])
-	pts := make([]Point2f, 0)
-	for i := 0; i < 4; i++ {
-		pts = append(pts, Point2f{X: realData[2*i], Y: realData[2*i+1]})
-	}
+	clt := C.struct_Point2f{}
+	crt := C.struct_Point2f{}
+	clb := C.struct_Point2f{}
+	crb := C.struct_Point2f{}
 
+	result := C.MinAreaRect2f(points.p, &clt, &crt, &clb, &crb)
+	ltPnt := Point2f{X: float32(clt.x), Y: float32(clt.y)}
+	rtPnt := Point2f{X: float32(crt.x), Y: float32(crt.y)}
+	lbPnt := Point2f{X: float32(clb.x), Y: float32(clb.y)}
+	rbPnt := Point2f{X: float32(crb.x), Y: float32(crb.y)}
+	pts := []Point2f{ltPnt, rtPnt, lbPnt, rbPnt}
 	return RotatedRect2f{
 		Points:       pts,
-		BoundingRect: image.Rect(bx, by, bx+bw, by+bh),
-		Center:       image.Pt(int(realData[14]), int(realData[15])),
-		Width:        realData[8],
-		Height:       realData[9],
-		Angle:        float64(realData[16]),
+		BoundingRect: image.Rect(int(result.boundingRect.x), int(result.boundingRect.y), int(result.boundingRect.x)+int(result.boundingRect.width), int(result.boundingRect.y)+int(result.boundingRect.height)),
+		Center:       image.Pt(int(result.center.x), int(result.center.y)),
+		Angle:        float64(result.angle),
+		Width:        float32(result.width),
+		Height:       float32(result.height),
 	}
 }
 

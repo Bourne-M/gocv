@@ -219,34 +219,28 @@ struct RotatedRect MinAreaRect(PointVector pts){
     return retrect;
 }
 
-int  MinAreaRect2f(PointVector pts,float *buffer){
+struct RotatedRect2f MinAreaRect2f(PointVector pts,Point2f* lt,Point2f* rt,Point2f* rb,Point2f* lb){
     cv::RotatedRect cvrect = cv::minAreaRect(*pts);
-    int outSize=17;
-    // float* buffer=new float[outSize];
-
+    Point* rpts = new Point[4];
     cv::Point2f* pts4 = new cv::Point2f[4];
     cvrect.points(pts4);
-    int idx=0;
-    for (size_t j = 0; j < 4; j++) {
-        buffer[idx++]=pts4[j].x;
-        buffer[idx++]=pts4[j].y;
-    }
+
+    lt->x=pts4[0].x;
+    lt->y=pts4[0].y;
+    rt->x=pts4[1].x;
+    rt->y=pts4[1].y;
+    rb->x=pts4[2].x;
+    rb->y=pts4[2].y;
+    lb->x=pts4[3].x;
+    lb->y=pts4[3].y;
+
     delete[] pts4;
-    buffer[idx++]=cvrect.size.width;
-    buffer[idx++]=cvrect.size.height;
-    
+
     cv::Rect bRect = cvrect.boundingRect();
-    buffer[idx++]=float(bRect.x);
-    buffer[idx++]=float(bRect.y);
-    buffer[idx++]=float(bRect.width);
-    buffer[idx++]=float(bRect.height);
-    // Rect r = {bRect.x, bRect.y, bRect.width, bRect.height};
-    buffer[idx++]=cvrect.center.x;
-    buffer[idx++]=cvrect.center.y;
-    buffer[idx++]=cvrect.angle;
-    // memcpy(outdata,buffer,outSize);
-    // delete[] buffer;
-    return outSize;
+    Rect r = {bRect.x, bRect.y, bRect.width, bRect.height};
+    Point centrpt = {int(lroundf(cvrect.center.x)), int(lroundf(cvrect.center.y))};
+    RotatedRect2f retrect2f = {r, centrpt, cvrect.angle,cvrect.size.width,cvrect.size.height};
+    return retrect2f;
 }
 
 void MinEnclosingCircle(PointVector pts, Point2f* center, float* radius){

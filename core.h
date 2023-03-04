@@ -130,6 +130,14 @@ typedef struct RotatedRect {
     double angle;
 } RotatedRect;
 
+typedef struct RotatedRect2f {
+    Rect boundingRect;
+    Point center;
+    double angle;
+    float width;
+    float height;
+} RotatedRect2f;
+
 // Wrapper for an individual cv::cvScalar
 typedef struct Scalar {
     double val1;
