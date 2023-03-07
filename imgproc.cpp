@@ -221,7 +221,7 @@ struct RotatedRect MinAreaRect(PointVector pts){
 
 struct RotatedRect2f MinAreaRect2f(PointVector pts,Point2f* lt,Point2f* rt,Point2f* rb,Point2f* lb){
     cv::RotatedRect cvrect = cv::minAreaRect(*pts);
-    Point* rpts = new Point[4];
+    // Point* rpts = new Point[4];
     cv::Point2f* pts4 = new cv::Point2f[4];
     cvrect.points(pts4);
 
